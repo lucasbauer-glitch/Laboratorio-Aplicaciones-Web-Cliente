@@ -1,22 +1,5 @@
 import { getData } from "./api.js";
-
-export async function normalization(response) {
-  try {
-    return response.products.map(product => ({
-      id: product.id,
-      title: product.title,
-      description: product.description,
-      price: product.price,
-      brand: product.brand,
-      category: product.category,
-      images: product.images,
-    }));
-    
-  } catch (error) {
-    console.error("Error al normalizar los productos:", error);
-    return [];
-  }
-}
+import { normalization } from "./utils.js";
 
 let cachedProducts = null;
 
@@ -34,4 +17,22 @@ export async function getProducts() {
   }
 }
 
-getProducts();
+
+let productList = document.querySelector('#product-list');
+getProducts().then(products => {
+    let template = '';
+    products.forEach(p => {
+        template += `
+        <div class="card">
+              <div class="product">
+                  <img src="${p.images[0]}" alt="${p.title}" />
+                  <div class="product-info">
+                      <h5>${p.title}</h5>
+                      <p>Precio: $${p.price.toFixed(2)}</p>
+                  </div>
+              </div>
+        </div>
+        `;
+    })
+    productList.innerHTML = template;
+  })
