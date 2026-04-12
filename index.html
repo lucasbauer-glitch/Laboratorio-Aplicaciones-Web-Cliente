@@ -1,17 +1,19 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <link rel="stylesheet" href="./css/styles.css">
 </head>
+
 <body>
     <header>
         <nav class="navbar">
             <div class="container-fluid">
                 <a class="navbar-brand" href="#">Navbar</a>
-                    <span class="navbar-toggler-icon"></span>
+                <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="collapse navbar-collapse" id="navbarNav">
                     <ul class="navbar-nav">
@@ -24,20 +26,37 @@
                     </ul>
                 </div>
             </div>
-             <div class="search-container">
+            <div class="search-container">
                 <form class="d-flex" role="search">
-                    <input id="search-input" class="form-control" type="search" placeholder="Search" aria-label="Search"/>
+                    <input id="search-input" class="form-control" type="search" placeholder="Search"
+                        aria-label="Search" />
                     <button class="btn-search" type="submit">Search</button>
                 </form>
             </div>
         </nav>
-                
+
     </header>
     <main>
         <section id="product-list">
 
         </section>
+
+        <dialog id="product-modal">
+            <div class="modal-content"
+                style="display: flex; flex-direction: column; align-items: center; text-align: center;">
+                <img id="modal-image" src="" alt="Imagen del producto"
+                    style="width: 360px; height: 360px; object-fit: contain;" />
+                <h2 id="modal-title"></h2>
+                <p id="modal-description"></p>
+                <p id="modal-price"></p>
+                <div style="display: flex; flex-direction: row; gap: 15px; margin-top: 10px;">
+                    <button id="close-modal">Cerrar</button>
+                    <button id="agregar-carrito">Agregar al carrito</button>
+                </div>
+            </div>
+        </dialog>
     </main>
     <script type="module" src="./js/main.js"></script>
 </body>
+
 </html>
