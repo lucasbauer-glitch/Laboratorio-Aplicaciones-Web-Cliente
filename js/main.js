@@ -1,6 +1,7 @@
 import { getData } from "./api.js";
 import { normalization } from "./utils.js";
 
+
 // variables
 let cachedProducts = null;
 let currentQuantity = 1;
@@ -126,5 +127,11 @@ const addToCart = (product, quantity) => {
 
     localStorage.setItem('cart', JSON.stringify(cart));
 
-    alert(`¡Agregaste ${quantity} unidad(es) de ${product.title} al carrito!`);
+    Swal.fire({
+        title: '¡Producto agregado al carrito!',
+        text: `Se agregaron ${quantity} unidad(es) de ${product.title} al carrito.`,
+        icon: 'success',
+        confirmButtonText: 'Cool'
+    })
+
 };
