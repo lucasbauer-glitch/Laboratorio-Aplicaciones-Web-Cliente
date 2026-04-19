@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
-    <link rel="stylesheet" href="./css/styles.css">
+    <link rel="stylesheet" href="./css/styles.css?v=2">
 </head>
 
 <body>
@@ -27,10 +27,19 @@
                 </div>
             </div>
             <div class="search-container">
-                <form class="d-flex" role="search">
-                    <input id="search-input" class="form-control" type="search" placeholder="Search"
-                        aria-label="Search" />
+                <form class="d-flex" role="search" style="margin: 0; width: 100%; max-width: 250px;">
+                    <input id="search-input" class="form-control" type="search" placeholder="Search" aria-label="Search"
+                        style="width: 100%; box-sizing: border-box;" />
                 </form>
+            </div>
+            <div class="cart-container" style="flex: 1; display: flex; justify-content: flex-end; align-items: center;">
+                <button id="cart-button"
+                    style="background: white; border: 1px solid black; border-radius: 5px; padding: 5px 12px; font-size: 24px; cursor: pointer; position: relative; display: flex; align-items: center; justify-content: center;"
+                    title="Ver carrito">
+                    🛒
+                    <span id="cart-counter"
+                        style="position: absolute; top: -8px; right: -8px; background-color: #ff3b30; color: white; border-radius: 12px; padding: 2px 6px; font-size: 12px; font-weight: bold;">0</span>
+                </button>
             </div>
         </nav>
 
@@ -50,20 +59,32 @@
                 <p id="modal-price"></p>
                 <div style="display: flex; flex-direction: row; gap: 15px; margin-top: 10px;">
                     <button id="close-modal">Cerrar</button>
-
-                    <div class="quantity-controls" style="display: flex; align-items: center; gap: 10px; border: 1px solid #ccc; padding: 5px; border-radius: 5px;">
-                        <button id="decrease-btn" style="cursor: pointer;">-</button>
-                        <span id="quantity-value">1</span>
-                        <button id="increase-btn" style="cursor: pointer;">+</button>
-                    </div>
-
                     <button id="agregar-carrito">Agregar al carrito</button>
+                </div>
+            </div>
+        </dialog>
+
+        <dialog id="cart-modal">
+            <div class="cart-modal-content" style="display: flex; flex-direction: column; height: 100%;">
+                <div
+                    style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #ddd; padding-bottom: 10px; margin-bottom: 15px;">
+                    <h2 style="margin: 0;">Tu Carrito</h2>
+                    <button id="close-cart-modal"
+                        style="cursor: pointer; background: none; border: none; font-size: 28px; line-height: 1;">&times;</button>
+                </div>
+                <div id="cart-items-container"
+                    style="display: flex; flex-direction: column; gap: 15px; overflow-y: auto; flex: 1;">
+                </div>
+                <div style="border-top: 1px solid #ddd; padding-top: 15px; margin-top: auto;">
+                    <button id="checkout-btn"
+                        style="width: 100%; padding: 12px; background-color: #000; color: #fff; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; font-size: 16px;">Ir
+                        al pago</button>
                 </div>
             </div>
         </dialog>
     </main>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script type="module" src="./js/main.js"></script>
+    <script type="module" src="./js/main.js?v=2"></script>
 
 </body>
 

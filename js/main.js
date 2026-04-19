@@ -5,7 +5,6 @@ import { normalization } from "./utils.js";
 
 // variables
 let cachedProducts = null;
-let currentQuantity = 1;
 
 // selectores
 let productList = document.querySelector('#product-list');
@@ -17,13 +16,13 @@ const modalPrice = document.querySelector('#modal-price');
 const modalDescription = document.querySelector('#modal-description');
 const btnAddToCart = document.querySelector('#agregar-carrito');
 const searchInput = document.querySelector('#search-input');
-const btnIncrease = document.querySelector('#increase-btn');
-const btnDecrease = document.querySelector('#decrease-btn');
-const quantityValue = document.querySelector('#quantity-value');
 
-const updateQuantityDisplay = () => {
-    quantityValue.textContent = currentQuantity;
-};
+// Selectores del Carrito
+const cartModal = document.querySelector('#cart-modal');
+const btnCloseCartModal = document.querySelector('#close-cart-modal');
+const btnOpenCartModal = document.querySelector('#cart-button');
+const cartItemsContainer = document.querySelector('#cart-items-container');
+const cartCounterEl = document.querySelector('#cart-counter');
 
 export async function getProducts() {
     if (cachedProducts) return cachedProducts;
@@ -81,8 +80,6 @@ productList.addEventListener('click', async (event) => {
     const productData = products.find(p => p.id == productId);
 
     if (productData) {
-        currentQuantity = 1;
-        updateQuantityDisplay();
 
         modalImage.src = productData.images[0];
         modalTitle.textContent = productData.title;
@@ -103,25 +100,13 @@ btnAddToCart.addEventListener('click', async () => {
     const productData = products.find(p => p.id == productId);
 
     if (productData) {
-        addToCart(productData, currentQuantity);
+        addToCart(productData, 1);
         modal.close();
     }
 });
 
 btnClose.addEventListener('click', () => {
     modal.close();
-});
-
-btnIncrease.addEventListener('click', () => {
-    currentQuantity++;
-    updateQuantityDisplay();
-});
-
-btnDecrease.addEventListener('click', () => {
-    if (currentQuantity > 1) {
-        currentQuantity--;
-        updateQuantityDisplay();
-    }
 });
 
 let cart = JSON.parse(localStorage.getItem('cart')) || [];
@@ -142,15 +127,68 @@ const addToCart = (product, quantity) => {
     }
 
     localStorage.setItem('cart', JSON.stringify(cart));
+    
+    updateCartUI(); // Actualizar UI después de agregar
 
     Swal.fire({
         title: '¡Producto agregado al carrito!',
-        text: `Se agregaron ${quantity} unidad(es) de ${product.title} al carrito.`,
+        text: `Se agregó ${product.title} al carrito.`,
         icon: 'success',
         confirmButtonText: 'Cool'
     })
 
 };
+
+function updateCartUI() {
+    let totalQuantity = 0;
+    let html = '';
+
+    cart.forEach(item => {
+        totalQuantity += item.quantity;
+        html += `
+            <div style="display: flex; gap: 10px; border-bottom: 1px solid #eee; padding-bottom: 10px;">
+                <img src="${item.image}" alt="${item.title}" style="width: 50px; height: 50px; object-fit: contain; background: white; padding: 2px;">
+                <div style="flex: 1; align-self: center;">
+                    <h5 style="margin: 0; font-size: 14px;">${item.title}</h5>
+                    <p style="margin: 5px 0 0 0; font-size: 13px; color: #555;">Cantidad: ${item.quantity}</p>
+                </div>
+            </div>
+        `;
+    });
+
+    if (cart.length === 0) {
+        html = '<p style="text-align: center; color: #777;">Tu carrito está vacío.</p>';
+    }
+
+    cartItemsContainer.innerHTML = html;
+    cartCounterEl.textContent = totalQuantity;
+}
+
+// Inicializar el aspecto del carrito al cargar
+updateCartUI();
+
+btnOpenCartModal.addEventListener('click', () => {
+    cartModal.showModal();
+});
+
+const closeCartModalWithAnimation = () => {
+    cartModal.classList.add('closing');
+    cartModal.addEventListener('animationend', function handler() {
+        cartModal.classList.remove('closing');
+        cartModal.close();
+        cartModal.removeEventListener('animationend', handler);
+    });
+};
+
+btnCloseCartModal.addEventListener('click', () => {
+    closeCartModalWithAnimation();
+});
+
+// También cerramos con animación si el usuario presiona la tecla ESC
+cartModal.addEventListener('cancel', (e) => {
+    e.preventDefault(); // Evita que se cierre instantáneamente
+    closeCartModalWithAnimation();
+});
 
 function searchproducts() {
   const listProducts = cachedProducts;
