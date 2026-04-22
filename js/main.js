@@ -1,8 +1,6 @@
 import { getData } from "./api.js";
 import { normalization } from "./utils.js";
 
-
-
 // variables
 let cachedProducts = null;
 
@@ -38,7 +36,6 @@ export async function getProducts() {
     }
 }
 
-
 function renderProducts(products) {
     const template = products.map(p => `
         <div class="card" data-id="${p.id}">
@@ -56,7 +53,6 @@ function renderProducts(products) {
 }
 
 //funcion init 
-
 async function init() {
     try {
         const products = await getProducts();
@@ -68,8 +64,6 @@ async function init() {
 }
 
 init();
-
-
 
 productList.addEventListener('click', async (event) => {
     const cardNode = event.target.closest('.card');
@@ -141,28 +135,79 @@ const addToCart = (product, quantity) => {
 
 function updateCartUI() {
     let totalQuantity = 0;
+    let totalPrice = 0;
     let html = '';
 
     cart.forEach(item => {
         totalQuantity += item.quantity;
+        totalPrice += item.price * item.quantity;
+
         html += `
-            <div style="display: flex; gap: 10px; border-bottom: 1px solid #eee; padding-bottom: 10px;">
-                <img src="${item.image}" alt="${item.title}" style="width: 50px; height: 50px; object-fit: contain; background: white; padding: 2px;">
-                <div style="flex: 1; align-self: center;">
-                    <h5 style="margin: 0; font-size: 14px;">${item.title}</h5>
-                    <p style="margin: 5px 0 0 0; font-size: 13px; color: #555;">Cantidad: ${item.quantity}</p>
+            <div class="cart-item" style="display: flex; gap: 12px; border-bottom: 1px solid #eee; padding: 15px 0; align-items: center;">
+                <img src="${item.image}" alt="${item.title}" style="width: 50px; height: 50px; object-fit: contain; background: #fff; border-radius: 4px;">
+                
+                <div style="flex: 1;">
+                    <h5 style="margin: 0; font-size: 14px; color: var(--dark-color); line-height: 1.2;">${item.title}</h5>
+                    <p style="margin: 4px 0; font-size: 13px; color: var(--primary-color); font-weight: bold;">
+                        $${(item.price * item.quantity).toFixed(2)}
+                    </p>
+                    
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                        <div style="display: flex; align-items: center; background: #f1f5f9; border-radius: 6px; padding: 2px;">
+                            <button class="btn-qty minus" data-id="${item.id}" style="border:none; background:none; cursor:pointer; width: 24px; font-weight:bold;">-</button>
+                            <span style="font-size: 13px; min-width: 20px; text-align: center; font-weight: bold;">${item.quantity}</span>
+                            <button class="btn-qty plus" data-id="${item.id}" style="border:none; background:none; cursor:pointer; width: 24px; font-weight:bold;">+</button>
+                        </div>
+
+                        <button class="btn-delete" data-id="${item.id}" title="Eliminar producto" 
+                                style="background: #fee2e2; border: none; cursor: pointer; color: #ef4444; padding: 5px 8px; border-radius: 6px; display: flex; align-items: center; transition: all 0.2s;">
+                            🗑️
+                        </button>
+                    </div>
                 </div>
             </div>
         `;
     });
 
     if (cart.length === 0) {
-        html = '<p style="text-align: center; color: #777;">Tu carrito está vacío.</p>';
+        html = '<p style="text-align: center; color: #777; margin-top: 20px;">Tu carrito está vacío.</p>';
     }
 
     cartItemsContainer.innerHTML = html;
     cartCounterEl.textContent = totalQuantity;
+
+    if (cart.length > 0) {
+        const totalHtml = `
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 20px; padding-top: 15px; border-top: 2px solid #eee;">
+                <span style="font-weight: bold; font-size: 16px; color: #64748b;">Subtotal:</span>
+                <span style="font-weight: 800; font-size: 20px; color: var(--dark-color);">$${totalPrice.toFixed(2)}</span>
+            </div>
+        `;
+        cartItemsContainer.insertAdjacentHTML('beforeend', totalHtml);
+    }
 }
+
+cartItemsContainer.addEventListener('click', (e) => {
+    const id = parseInt(e.target.dataset.id);
+    if (!id) return;
+
+    const itemIndex = cart.findIndex(item => item.id === id);
+
+    if (e.target.classList.contains('plus')) {
+        cart[itemIndex].quantity++;
+    } else if (e.target.classList.contains('minus')) {
+        if (cart[itemIndex].quantity > 1) {
+            cart[itemIndex].quantity--;
+        } else {
+            cart.splice(itemIndex, 1);
+        }
+    } else if (e.target.classList.contains('btn-delete')) {
+        cart.splice(itemIndex, 1);
+    }
+
+    localStorage.setItem('cart', JSON.stringify(cart));
+    updateCartUI();
+});
 
 // Inicializar el aspecto del carrito al cargar
 updateCartUI();
@@ -223,6 +268,4 @@ function searchproducts() {
       const encontrado= buscar(texto);
       mostrarResultado(encontrado); 
   });
-
 }
-
