@@ -14,6 +14,7 @@ const modalPrice = document.querySelector('#modal-price');
 const modalDescription = document.querySelector('#modal-description');
 const btnAddToCart = document.querySelector('#agregar-carrito');
 const searchInput = document.querySelector('#search-input');
+const deleteCartButton = document.querySelector('#delete-cart-btn');
 
 // Selectores del Carrito
 const cartModal = document.querySelector('#cart-modal');
@@ -269,3 +270,54 @@ function searchproducts() {
       mostrarResultado(encontrado); 
   });
 }
+
+function deleteCart() {
+    cart = [];
+    localStorage.removeItem('cart');
+    updateCartUI();
+}
+
+
+deleteCartButton.addEventListener('click', () => {
+    if (cart.length === 0) {
+        Swal.fire({
+            title: "Cart is already empty",
+            text: "There are no items to delete.",
+            icon: "info",
+            target: document.getElementById('cart-modal'),
+            heighAuto: false,
+            grow: false,
+            position: 'center',
+            backdrop: false,
+        });
+        return;
+    }   
+    Swal.fire({
+        title: "Are you sure?",
+        text: "You won't be able to revert this!",
+        icon: "warning",
+        target: document.getElementById('cart-modal'),
+        heighAuto: false,
+        grow: false,
+        position: 'center',
+        backdrop: false,  
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Yes, delete it!"
+        }).then((result) => {
+            if (result.isConfirmed) 
+                deleteCart();
+
+                Swal.fire({
+                title: "Deleted!",
+                text: "Your file has been deleted.",
+                icon: "success",
+                target: document.getElementById('cart-modal'),
+                heighAuto: false,
+                grow: false,
+                position: 'center',
+                backdrop: false,
+            });
+        });
+}); 
