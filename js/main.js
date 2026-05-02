@@ -15,6 +15,7 @@ const modalDescription = document.querySelector('#modal-description');
 const btnAddToCart = document.querySelector('#agregar-carrito');
 const searchInput = document.querySelector('#search-input');
 const deleteCartButton = document.querySelector('#delete-cart-btn');
+const checkoutButton = document.querySelector('#checkout-btn');
 
 // Selectores del Carrito
 const cartModal = document.querySelector('#cart-modal');
@@ -25,11 +26,11 @@ const cartCounterEl = document.querySelector('#cart-counter');
 
 export async function getProducts() {
     if (cachedProducts) return cachedProducts;
-    console.log("Cargando productos desde la API...");
+    //console.log("Cargando productos desde la API...");
     try {
         const response = await getData();
         cachedProducts = await normalization(response);
-        console.log("Productos normalizados:", cachedProducts);
+        //console.log("Productos normalizados:", cachedProducts);
         return cachedProducts;
     } catch (err) {
         console.error("Error cargando productos:", err);
@@ -285,7 +286,6 @@ deleteCartButton.addEventListener('click', () => {
             text: "There are no items to delete.",
             icon: "info",
             target: document.getElementById('cart-modal'),
-            heighAuto: false,
             grow: false,
             position: 'center',
             backdrop: false,
@@ -297,7 +297,6 @@ deleteCartButton.addEventListener('click', () => {
         text: "You won't be able to revert this!",
         icon: "warning",
         target: document.getElementById('cart-modal'),
-        heighAuto: false,
         grow: false,
         position: 'center',
         backdrop: false,  
@@ -306,7 +305,7 @@ deleteCartButton.addEventListener('click', () => {
         cancelButtonColor: "#d33",
         confirmButtonText: "Yes, delete it!"
         }).then((result) => {
-            if (result.isConfirmed) 
+            if (result.isConfirmed) {
                 deleteCart();
 
                 Swal.fire({
@@ -314,10 +313,23 @@ deleteCartButton.addEventListener('click', () => {
                 text: "Your file has been deleted.",
                 icon: "success",
                 target: document.getElementById('cart-modal'),
-                heighAuto: false,
                 grow: false,
                 position: 'center',
                 backdrop: false,
-            });
+            });}
         });
 }); 
+
+
+checkoutButton.addEventListener('click', () => {
+    if (cart.length > 0) {
+        deleteCart();
+        Swal.fire({
+        title: "Gracias por tu compra!",
+        icon: "success",
+        draggable: true,
+        target: document.getElementById('cart-modal'),
+        backdrop: false,
+        });
+        
+    }});
